@@ -49,17 +49,8 @@ libsigrok_la_SOURCES += \
 
 # Output formats
 libsigrok_la_SOURCES += \
-	output/binary.c \
-	output/bits.c \
-	output/vcd.c \
-	output/ols.c \
-	output/gnuplot.c \
-	output/chronovu_la8.c \
-	output/csv.c \
-	output/analog.c \
 	output/output.c \
-	output/hex.c \
-	output/ascii.c
+	output/bits.c
 
 # Hardware (common files)
 libsigrok_la_SOURCES += \
