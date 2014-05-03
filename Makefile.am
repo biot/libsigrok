@@ -178,7 +178,8 @@ if HW_FX2LAFW
 libsigrok_la_SOURCES += \
 	hardware/fx2lafw/protocol.h \
 	hardware/fx2lafw/protocol.c \
-	hardware/fx2lafw/api.c
+	hardware/fx2lafw/api.c \
+	hardware/fx2lafw/dslogic.c
 endif
 if HW_GMC_MH_1X_2X
 libsigrok_la_SOURCES += \
