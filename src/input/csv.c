@@ -388,10 +388,12 @@ static int send_samples(const struct sr_dev_inst *sdi, uint8_t *buffer,
 	return SR_OK;
 }
 
-static int init(struct sr_input *in, GHashTable *options)
+static int init(struct sr_input *in, GHashTable *options, GHashTable *metadata)
 {
 	struct context *inc;
 	const char *s;
+
+	(void)metadata;
 
 	in->sdi = sr_dev_inst_new(SR_ST_ACTIVE, NULL, NULL, NULL);
 	in->priv = inc = g_malloc0(sizeof(struct context));

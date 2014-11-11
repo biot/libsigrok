@@ -49,12 +49,14 @@ static int format_match(GHashTable *metadata)
 	return SR_ERR;
 }
 
-static int init(struct sr_input *in, GHashTable *options)
+static int init(struct sr_input *in, GHashTable *options, GHashTable *metadata)
 {
 	struct sr_channel *ch;
 	struct context *inc;
 	int num_channels, i;
 	char name[16];
+
+	(void)metadata;
 
 	num_channels = g_variant_get_int32(g_hash_table_lookup(options, "numchannels"));
 	if (num_channels < 1) {

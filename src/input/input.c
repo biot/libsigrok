@@ -204,21 +204,8 @@ SR_API void sr_input_options_free(const struct sr_option **options)
 	g_free(options);
 }
 
-/**
- * Create a new input instance using the specified input module.
- *
- * This function is used when a client wants to use a specific input
- * module to parse a stream. No effort is made to identify the format.
- *
- * @param options GHashTable consisting of keys corresponding with
- * the module options \c id field. The values should be GVariant
- * pointers with sunk references, of the same GVariantType as the option's
- * default value.
- *
- * @since 0.4.0
- */
-SR_API struct sr_input *sr_input_new(const struct sr_input_module *imod,
-		GHashTable *options)
+static struct sr_input *sr_input_new_with_meta(const struct sr_input_module *imod,
+		GHashTable *options, GHashTable *metadata)
 {
 	struct sr_input *in;
 	struct sr_option *mod_opts;
@@ -268,7 +255,7 @@ SR_API struct sr_input *sr_input_new(const struct sr_input_module *imod,
 		}
 	}
 
-	if (in->module->init && in->module->init(in, new_opts) != SR_OK) {
+	if (in->module->init && in->module->init(in, new_opts, metadata) != SR_OK) {
 		g_free(in);
 		in = NULL;
 	} else {
@@ -279,6 +266,25 @@ SR_API struct sr_input *sr_input_new(const struct sr_input_module *imod,
 		g_hash_table_destroy(new_opts);
 
 	return in;
+}
+
+/**
+ * Create a new input instance using the specified input module.
+ *
+ * This function is used when a client wants to use a specific input
+ * module to parse a stream. No effort is made to identify the format.
+ *
+ * @param options GHashTable consisting of keys corresponding with
+ * the module options \c id field. The values should be GVariant
+ * pointers with sunk references, of the same GVariantType as the option's
+ * default value.
+ *
+ * @since 0.4.0
+ */
+SR_API struct sr_input *sr_input_new(const struct sr_input_module *imod,
+		GHashTable *options)
+{
+	return sr_input_new_with_meta(imod, options, NULL);
 }
 
 /* Returns TRUE if all required meta items are available. */
@@ -471,21 +477,24 @@ SR_API int sr_input_scan_file(const char *filename, const struct sr_input **in)
 		}
 		sr_spew("Trying module %s.", imod->id);
 		ret = imod->format_match(meta);
-		g_hash_table_destroy(meta);
 		if (ret == SR_ERR_DATA) {
 			/* Module recognized this buffer, but cannot handle it. */
+			g_hash_table_destroy(meta);
 			break;
 		} else if (ret == SR_ERR) {
 			/* Module didn't recognize this buffer. */
+			g_hash_table_destroy(meta);
 			continue;
 		} else if (ret != SR_OK) {
 			/* Can be SR_ERR_NA. */
+			g_hash_table_destroy(meta);
 			return ret;
 		}
 
 		/* Found a matching module. */
 		sr_spew("Module %s matched.", imod->id);
-		*in = sr_input_new(imod, NULL);
+		*in = sr_input_new_with_meta(imod, NULL, meta);
+		g_hash_table_destroy(meta);
 		break;
 	}
 	g_string_free(header_buf, TRUE);

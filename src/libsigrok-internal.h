@@ -280,7 +280,7 @@ struct sr_input_module {
 	 * @retval SR_OK Success
 	 * @retval other Negative error code.
 	 */
-	int (*init) (struct sr_input *in, GHashTable *options);
+	int (*init) (struct sr_input *in, GHashTable *options, GHashTable *metadata);
 
 	/**
 	 * Send data to the specified input instance.

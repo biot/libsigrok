@@ -146,9 +146,10 @@ static int format_match(GHashTable *metadata)
 	return SR_OK;
 }
 
-static int init(struct sr_input *in, GHashTable *options)
+static int init(struct sr_input *in, GHashTable *options, GHashTable *metadata)
 {
 	(void)options;
+	(void)metadata;
 
 	in->sdi = sr_dev_inst_new(SR_ST_ACTIVE, NULL, NULL, NULL);
 	in->priv = g_malloc0(sizeof(struct context));
