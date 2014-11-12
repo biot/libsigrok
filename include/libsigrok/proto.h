@@ -177,7 +177,8 @@ SR_API int sr_trigger_match_add(struct sr_trigger_stage *stage,
 		struct sr_channel *ch, int trigger_match, float value);
 
 /* analog.c */
-SR_API int sr_analog_to_float(struct sr_datafeed_analog2 *analog, float *buf);
+SR_API int sr_analog_to_float(const struct sr_datafeed_analog2 *analog,
+		float *buf);
 
 /*--- strutil.c -------------------------------------------------------------*/
 
