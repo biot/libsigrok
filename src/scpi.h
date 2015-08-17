@@ -70,9 +70,16 @@ struct sr_scpi_hw_info {
 	char *firmware_version;
 };
 
+enum scpi_quirks {
+	SCPI_QUIRK_GET_MQ = (1 << 0),
+	SCPI_QUIRK_FLUKE_PROMPT = (1 << 1),
+};
+
 struct sr_scpi_dev_inst {
 	const char *name;
 	const char *prefix;
+	uint64_t quirks;
+	int last_status;
 	int priv_size;
 	GSList *(*scan)(struct drv_context *drvc);
 	int (*dev_inst_new)(void *priv, struct drv_context *drvc,
