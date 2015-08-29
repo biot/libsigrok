@@ -130,6 +130,9 @@ extern SR_PRIV struct sr_dev_driver rigol_ds_driver_info;
 #ifdef HAVE_HW_SALEAE_LOGIC16
 extern SR_PRIV struct sr_dev_driver saleae_logic16_driver_info;
 #endif
+#ifdef HAVE_HW_SCPI_DMM
+extern SR_PRIV struct sr_dev_driver scpi_dmm_driver_info;
+#endif
 #ifdef HAVE_HW_SCPI_PPS
 extern SR_PRIV struct sr_dev_driver scpi_pps_driver_info;
 #endif
@@ -287,6 +290,9 @@ SR_PRIV struct sr_dev_driver **drivers_lists[] = {
 #endif
 #ifdef HAVE_HW_SALEAE_LOGIC16
 	(DRVS) {&saleae_logic16_driver_info, NULL},
+#endif
+#ifdef HAVE_HW_SCPI_DMM
+	(DRVS) {&scpi_dmm_driver_info, NULL},
 #endif
 #ifdef HAVE_HW_SCPI_PPS
 	(DRVS) {&scpi_pps_driver_info, NULL},
