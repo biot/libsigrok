@@ -540,12 +540,13 @@ static int config_set(uint32_t key, GVariant *data, const struct sr_dev_inst *sd
 static int config_list(uint32_t key, GVariant **data, const struct sr_dev_inst *sdi,
 		const struct sr_channel_group *cg)
 {
+	struct sr_channel *ch;
 	GVariant *gvar, *range[2];
 	GVariantBuilder gvb;
-	int ret;
-	unsigned int i;
+	GSList *l;
+	int enabled_channels, ret;
+	unsigned int max_samplerate, i;
 
-	(void)sdi;
 	(void)cg;
 
 	ret = SR_OK;
@@ -559,9 +560,35 @@ static int config_list(uint32_t key, GVariant **data, const struct sr_dev_inst *
 				devopts, ARRAY_SIZE(devopts), sizeof(uint32_t));
 		break;
 	case SR_CONF_SAMPLERATE:
+		if (!sdi)
+			return SR_ERR_ARG;
+		enabled_channels = 0;
+		for (l = sdi->channels; l; l = l->next) {
+			ch = l->data;
+			if (ch->enabled)
+				enabled_channels++;
+		}
+		if (enabled_channels <= 2)
+			max_samplerate = SR_MHZ(100);
+		else if (enabled_channels <= 4)
+			max_samplerate = SR_MHZ(50);
+		else if (enabled_channels <= 7)
+			max_samplerate = SR_MHZ(40);
+		else if (enabled_channels <= 8)
+			max_samplerate = SR_MHZ(32);
+		else if (enabled_channels <= 10)
+			max_samplerate = SR_MHZ(25);
+		else if (enabled_channels <= 13)
+			max_samplerate = SR_MHZ(16);
+		else
+			max_samplerate = SR_KHZ(12500);
+		for (i = 0; i < ARRAY_SIZE(samplerates); i++) {
+			if (samplerates[i] > max_samplerate)
+				break;
+		}
 		g_variant_builder_init(&gvb, G_VARIANT_TYPE("a{sv}"));
 		gvar = g_variant_new_fixed_array(G_VARIANT_TYPE("t"),
-			samplerates, ARRAY_SIZE(samplerates), sizeof(uint64_t));
+			samplerates, i, sizeof(uint64_t));
 		g_variant_builder_add(&gvb, "{sv}", "samplerates", gvar);
 		*data = g_variant_builder_end(&gvb);
 		break;
