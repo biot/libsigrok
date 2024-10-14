@@ -214,12 +214,6 @@ static const char *an2_dig16_sbus_trigger_sources[] = {
 	"D8", "D9", "D10", "D11", "D12", "D13", "D14", "D15",
 };
 
-/* RTH1002 */
-static const char *an2_dig8_isol_trigger_sources[] = {
-	"CH1", "CH2",
-	"D0", "D1", "D2", "D3", "D4", "D5", "D6", "D7",
-};
-
 /* HMO Compact4 */
 static const char *an4_dig8_trigger_sources[] = {
 	"CH1", "CH2", "CH3", "CH4",
